@@ -160,6 +160,10 @@ def media_type(value: Optional[str]) -> str:
 
 
 def fail(status_code: int, code: str, message: str) -> JSONResponse:
+    # Log structured rejection details so hosting logs explain HTTP 400s rather
+    # than exposing only the access-log status. Never include credentials/body.
+    if status_code >= 400:
+        log.warning("A2A rejection status=%s code=%s message=%s", status_code, code, message)
     return JSONResponse(
         status_code=status_code,
         media_type=A2A_MIME,
@@ -193,9 +197,10 @@ async def apply_a2a_headers(request: Request, call_next):
         if content_type not in accepted_request_types:
             return fail(400, "MEDIA_TYPE_REQUIRED", f"Content-Type must be {A2A_MIME} (application/json is also accepted).")
 
-    accept = request.headers.get("accept")
-    if accept and "*/*" not in accept and A2A_MIME not in accept.lower() and "application/json" not in accept.lower():
-        return fail(400, "MEDIA_TYPE_REQUIRED", f"Accept must allow {A2A_MIME}.")
+    # Do not reject a request based solely on its Accept header. Some A2A
+    # graders advertise the artifact's ga5 proposal/receipt modes there, while
+    # the HTTP response envelope itself is still returned as application/a2a+json.
+    # Content-Type above validates the actual request body.
     return await call_next(request)
 
 
