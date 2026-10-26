@@ -880,7 +880,7 @@ def health(request: Request):
     return JSONResponse(content={"ok": True, "protocol": "A2A 1.0 HTTP+JSON"}, media_type=A2A_MIME)
 
 
-@app.post(BASE_PATH + "/message/send")
+@app.post(BASE_PATH + "/message:send")
 async def send_message(request: Request):
     principal = principal_from_request(request)
     if not principal:
