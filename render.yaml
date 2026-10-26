@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: tds-a2a-invoice-agent
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /.well-known/agent-card.json
+    envVars:
+      - key: A2A_BASE_PATH
+        value: /a2a
+      - key: PUBLIC_BASE_URL
+        value: https://REPLACE-WITH-YOUR-RENDER-HOST.onrender.com/a2a/
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tds-a2a-invoice-agent-db
+          property: connectionString
+
+databases:
+  - name: tds-a2a-invoice-agent-db
+    plan: free
+    databaseName: invoice_agent
+    user: invoice_agent
