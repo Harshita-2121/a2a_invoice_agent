@@ -33,10 +33,10 @@ log = logging.getLogger("invoice-agent")
 
 # MIME types used by the grader.
 A2A_MIME = "application/a2a+json"
-BATCH_MIME = "application/vnd.gas.invoice-claim-batch+json"
-PROPOSAL_MIME = "application/vnd.gas.invoice-action-proposals+json"
-RESULT_MIME = "application/vnd.gas.invoice-action-results+json"
-RECEIPT_MIME = "application/vnd.gas.invoice-action-receipts+json"
+BATCH_MIME = "application/vnd.ga5.invoice-claim-batch+json"
+PROPOSAL_MIME = "application/vnd.ga5.invoice-action-proposals+json"
+RESULT_MIME = "application/vnd.ga5.invoice-action-results+json"
+RECEIPT_MIME = "application/vnd.ga5.invoice-action-receipts+json"
 ACTIONS = {
     "settle_invoice",
     "request_approval",
